@@ -107,7 +107,7 @@ loop do
   db = randomword_generator
   puts " Welcome to Hangman #{username}"
   randomword = chomp_word(db)
-  puts "your word is #{randomword}" #need to comment out when finished
+  # puts "your word is #{randomword}" #need to comment out when finished
 
   board = board_init randomword
 
