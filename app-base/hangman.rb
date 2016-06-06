@@ -1,3 +1,5 @@
+require "./db/setup"
+require "./lib/all"
 require "pry"
 word = [ ]
 board = [ ]
@@ -9,7 +11,7 @@ check = false
 def get_user_name
   puts "Whats your name?"
   username = gets.chomp
-  User.where(username).first_or_create!
+  User.where(username: username).first_or_create!
   username
 end
 
@@ -87,8 +89,10 @@ end
 
 #Game starts here
 loop do
+  username = get_user_name
+  system "clear"
   db = randomword_generator
-  puts " Welcome to Hangman"
+  puts " Welcome to Hangman #{username}"
   randomword = chomp_word(db)
   #puts "your word is #{randomword}" #need to comment out when finished
 
