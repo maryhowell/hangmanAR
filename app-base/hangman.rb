@@ -52,7 +52,8 @@ def update_guess_left board, input, guesses
   guesses
 end
 
-def play_again?
+def play_again? username
+  show_record username
   puts "Would you like to play again y or n?"
   again = gets.chomp
 end
@@ -72,18 +73,30 @@ def check_input_for_a_letter input
   input
 end
 
-def win_or_lose? board, randomword, guesses
+def win_or_lose? board, randomword, guesses, username
+  user_id = User.where(username: username).ids.first.to_s
   if board == randomword
-    puts "YAY you won!!"
-
+    puts "YAY you have Won"
+    win = Record.where(user_id: user_id).first_or_create!
+    win.win +=1
+    win.save!
     done = true
   elsif guesses == 0
-    puts "You lost, Maybe next time"
+    puts "You have Lost"
     puts "The word was #{randomword.join}"
-
+    loss = Record.where(user_id: user_id).first_or_create!
+    loss.loss +=1
+    loss.save!
     done = true
   end
   done
+end
+
+def show_record username
+  user = User.where(username: username).first_or_create!
+  win = Record.where(user_id: user.id.to_s).first_or_create!.win
+  loss = Record.where(user_id: user.id.to_s).first_or_create!.loss
+  puts "You have killed #{loss} people, and saved #{win} people"
 end
 
 
@@ -94,7 +107,7 @@ loop do
   db = randomword_generator
   puts " Welcome to Hangman #{username}"
   randomword = chomp_word(db)
-  #puts "your word is #{randomword}" #need to comment out when finished
+  puts "your word is #{randomword}" #need to comment out when finished
 
   board = board_init randomword
 
@@ -108,9 +121,9 @@ loop do
     check_input_for_a_letter(input)
     some_data = record_compare_guess(randomword, input, board)
     guesses = update_guess_left(board, input, guesses)
-    done = win_or_lose?(board, randomword, guesses)
+    done = win_or_lose?(board, randomword, guesses, username)
   end
-  again = play_again?
+  again = play_again? username
 
   break if again == "n"
   done = false
