@@ -7,3 +7,4 @@ require "./hangman"
     binding.pry
     assert_equal false, g.over?
   end
+end
